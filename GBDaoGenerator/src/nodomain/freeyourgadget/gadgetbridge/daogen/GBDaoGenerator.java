@@ -103,7 +103,7 @@ public class GBDaoGenerator {
             outputDir.mkdirs();
         }
 
-        final Schema schema = new Schema(136, MAIN_PACKAGE + ".entities");
+        final Schema schema = new Schema(137, MAIN_PACKAGE + ".entities");
 
         final List<Entity> sampleProvidersToGenerate = new LinkedList<>();
 
@@ -227,6 +227,7 @@ public class GBDaoGenerator {
         addKeephealthActivitySample(schema, user, device);
         addKeephealthBloodPressureSample(schema, user, device);
         addKeephealthTemperatureSample(schema, user, device);
+        addYcbtActivitySample(schema, user, device);
 
         addHuaweiActivitySample(schema, user, device);
         sampleProvidersToGenerate.add(addHuaweiStressSample(schema, user, device));
@@ -1462,6 +1463,18 @@ public class GBDaoGenerator {
         Entity sample = addEntity(schema, "KeephealthTemperatureSample");
         addCommonTimeSampleProperties("AbstractTemperatureSample", sample, user, device);
         sample.addFloatProperty(SAMPLE_TEMPERATURE).notNull().codeBeforeGetter(OVERRIDE);
+        return sample;
+    }
+
+    private static Entity addYcbtActivitySample(final Schema schema, final Entity user, final Entity device) {
+        final Entity sample = addEntity(schema, "YcbtActivitySample");
+        sample.implementsSerializable();
+        addCommonActivitySampleProperties("AbstractActivitySample", sample, user, device);
+        sample.addIntProperty(SAMPLE_RAW_KIND).notNull().codeBeforeGetterAndSetter(OVERRIDE);
+        sample.addIntProperty(SAMPLE_RAW_INTENSITY).notNull().codeBeforeGetterAndSetter(OVERRIDE);
+        sample.addIntProperty(SAMPLE_STEPS).notNull().codeBeforeGetterAndSetter(OVERRIDE);
+        sample.addIntProperty("distanceCm").notNull().codeBeforeGetterAndSetter(OVERRIDE);
+        sample.addIntProperty(SAMPLE_HEART_RATE).notNull().codeBeforeGetterAndSetter(OVERRIDE);
         return sample;
     }
 
